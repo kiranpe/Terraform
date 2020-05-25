@@ -1,0 +1,179 @@
+- name: install jenkins on newly created instance
+  hosts: jenkinsci
+  become: yes
+ 
+  tasks:
+     - name: add key 
+       apt_key:
+            url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
+            state: present
+     - name: add repo
+       apt_repository:
+                  repo: deb https://pkg.jenkins.io/debian-stable binary/
+                  state: present
+     - name: run the update
+       shell: apt-get update
+       args:
+          warn: no
+     
+     - name: Install aptitude using apt
+       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+     - name: Install Jenkins
+       apt:
+        name: jenkins
+        state: present
+
+     - name: Start & Enable Jenkins
+       service: 
+        name: jenkins
+        state: started
+
+     - name: Sleep for 30 seconds and continue with play
+       wait_for: 
+        timeout: 30
+
+     - name: Get init password Jenkins
+       shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+       changed_when: false
+       register: result
+     - debug: msg="{{ result.stdout }}"
+
+     - name: Create scripts directory if it does not exist
+       file:
+         path: /sites/scripts
+         state: directory
+         mode: '0777'
+
+     - name: Create logs directory if it does not exist
+       file:
+         path: /sites/logs
+         state: directory
+         mode: '0777'
+
+     - name: add jenkins to root
+       lineinfile:
+          path: /etc/sudoers
+          insertafter: '^# User privilege specification'
+          line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
+          firstmatch: yes
+          state: present
+
+     - name: get the ip address
+       shell: curl http://169.254.169.254/latest/meta-data/public-ipv4
+       args:
+         warn: no
+       register: result
+     - set_fact: public_ip={{ result.stdout }}
+     - debug: msg="Jenkins Url is http://{{ public_ip }}:8080"
+
+     - name: Generating id_rsa key for jenkins user
+       command: ssh-keygen -q -f ~/.ssh/id_rsa -t rsa -N ''
+       become_user: jenkins
+
+     - name: create .m2 directory
+       file:
+        path: /var/lib/jenkins/.m2
+        state: directory
+        recurse: yes
+        owner: jenkins
+        group: jenkins
+
+     - name: copy settings.xml
+       copy:
+        src: settings.xml
+        dest: /var/lib/jenkins/.m2
+        owner: jenkins
+        group: jenkins
+        mode: '0664'
+    
+     - name: copy settings-security.xml
+       copy:
+        src: settings-security.xml
+        dest: /var/lib/jenkins/.m2
+        owner: jenkins
+        group: jenkins
+        mode: '0664'
+
+     - name: copy pem file to jenkins server
+       copy:
+         src: /sites/keyfile.pem
+         dest: /sites
+         owner: jenkins
+         group: jenkins
+         mode: '0600'
+     
+     - name: install jq
+       command: apt install jq -y
+       
+     - name: check latest terraform version
+       shell: curl -sL https://releases.hashicorp.com/terraform/index.json | jq -r '.versions[].builds[].url' | egrep 'terraform_[0-9]\.[0-9]{1,2}\.[0-9]{1,2}_linux.*amd64' | sort -V | tail -1
+       register: result
+       args:
+        warn: no
+     - set_fact: url="{{ result.stdout }}"
+      
+     - name: download latest version
+       get_url:
+          url: "{{ url }}"
+          dest: /sites/terraform.zip
+          mode: '0755'
+
+     - name: install unzip command
+       command: apt install unzip -y
+
+     - name: extract terraform zip file
+       unarchive:
+           src: /sites/terraform.zip
+           dest: /usr/local/bin
+           remote_src: yes
+
+     - name: Check terraform version
+       command: terraform --version
+       register: result
+     - debug: msg={{ result.stdout }}
+
+     - name: Delete terraform zip file from /sites
+       file:
+        path: /sites/terraform.zip
+        state: absent
+
+     - name: install phython pip
+       command: apt install python3-pip -y
+ 
+     - name: Install required system packages
+       apt: name={{ item }} state=latest update_cache=yes
+       loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+     - name: Add Docker GPG apt Key
+       apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+     - name: Add Docker Repository
+       apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+     - name: Update apt and install docker-ce
+       apt: update_cache=yes name=docker-ce state=latest
+     
+     - name: Install python pip
+       command: apt install python-pip -y
+   
+     - name: Install Docker Module for Python for root user
+       command: pip3 install docker
+   
+     - name: Check docker version
+       command: docker --version
+       register: result
+     - debug: msg="{{ result.stdout }}"
+ 
+     - name: Log in to Docker Hub
+       docker_login:
+           username: "{{ hub_username }}"
+           password: "{{ hub_password }}"
+           reauthorize: yes
+       register: login_results
+     - debug: 
+         var: login_results
