@@ -55,7 +55,7 @@ resource "aws_instance" "k8sworker" {
       >workerhost;
       echo "[k8sworker]" | tee -a workerhost;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" | tee -a workerhost;
-      cat ../masternode/masterhost | tee -a workerhost;
+      cat masterhost | tee -a workerhost;
       ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i workerhost worker-node-playbook.yml
     EOT
   }
@@ -64,12 +64,4 @@ resource "aws_instance" "k8sworker" {
     Name = "k8sworker-node.${count.index}"
   }
   depends_on = ["aws_instance.k8smaster"]
-}
-
-output "ec2_workernode_publicip" {
-  value = "${aws_instance.k8sworker.*.public_ip}"
-}
-
-output "ec2_masternode_publicip" {
-  value = "${aws_instance.k8smaster.public_ip}"
 }

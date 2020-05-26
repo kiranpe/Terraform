@@ -6,3 +6,5 @@
 #terraform workspace new worker
 
 #This will automatically pick the right instance type for your set up
+
+#Created All in one file to create k8s cluster with one terraform file
