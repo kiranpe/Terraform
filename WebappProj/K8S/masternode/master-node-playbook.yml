@@ -44,10 +44,6 @@
 
    - debug: msg={{ result.stdout }}
 
-   - name: Changing hostname as master node
-     shell: hostnamectl set-hostname master-node
-     register: result
-
    - name: Initialize the cluster on master node
      shell: kubeadm init --pod-network-cidr=10.244.0.0/16
      register: result

@@ -39,7 +39,7 @@
    - debug: msg={{ result.stdout }}
 
    - name: join master node
-     shell: kubeadm join 172.31.1.1:6443 --token 680cy6.zyvy38w0u2ctv431 --discovery-token-ca-cert-hash sha256:ffdf4b322a0ce153067f475840f3a564b78d0752219d410fe603b5e2016b5937
+     shell: kubeadm join 172.31.6.81:6443 --token fkryx4.wv4esrf1q1tr7km0 --discovery-token-ca-cert-hash sha256:26441357fdd2e64ae3f59b0d39a662364f0322ce21546bb75ab1f5f5af1dbfbd
      args:
         warn: no
    - pause:

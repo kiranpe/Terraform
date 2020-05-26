@@ -10,8 +10,13 @@ variable "ami" {
   default = "ami-05c1fa8df71875112"
 }
 
-variable "type" {
-  default = "t2.micro"
+variable "instance_type" {
+   type = map
+
+   default = {
+    master = "t2.medium"
+    worker = "t2.micro"
+   }
 }
 
 variable "secgroup" {
