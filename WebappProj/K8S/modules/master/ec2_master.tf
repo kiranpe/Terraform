@@ -1,6 +1,6 @@
 resource "aws_instance" "k8smaster" {
   ami           = var.ami
-  instance_type = var.instance_type["master"]
+  instance_type = lookup(var.instance_type,terraform.workspace)
 
   security_groups = ["${var.secgroup}"]
   key_name        = var.seckey

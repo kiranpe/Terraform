@@ -1,6 +1,6 @@
 resource "aws_instance" "k8sworkernode" {
   ami           = var.ami
-  instance_type = var.instance_type["worker"]
+  instance_type = lookup(var.instance_type,terraform.workspace)
 
   security_groups = ["${var.secgroup}"]
   key_name        = var.seckey
