@@ -21,7 +21,7 @@ resource "aws_instance" "k8smaster" {
 
   provisioner "local-exec" {
     command = <<EOT
-      sleep 30;
+      sleep 15;
       >masterhost;
       echo "[k8smaster]" | tee -a masterhost;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" | tee -a masterhost;
@@ -51,7 +51,7 @@ resource "aws_instance" "k8sworker" {
 
   provisioner "local-exec" {
     command = <<EOT
-      sleep 30;
+      sleep 15;
       >workerhost;
       echo "[k8sworker]" | tee -a workerhost;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" | tee -a workerhost;
