@@ -8,3 +8,4 @@
 #This will automatically pick the right instance type for your set up
 
 #Created All in one file to create k8s cluster with one terraform file
+#Instead of picking ami using image name to use stable ubuntu in all regions using terraform datasource

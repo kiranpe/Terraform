@@ -1,5 +1,5 @@
 resource "aws_instance" "k8smaster" {
-  ami           = var.ami
+  ami           = "${data.aws_ami.ec2_type.id}"
   instance_type = var.instance_type["master"]
 
   security_groups = ["${var.secgroup}"]
@@ -31,7 +31,7 @@ resource "aws_instance" "k8smaster" {
 }
 
 resource "aws_instance" "k8sworker" {
-  ami           = var.ami
+  ami           = "${data.aws_ami.ec2_type.id}"
   instance_type = var.instance_type["worker"]
 
   security_groups = ["${var.secgroup}"]
