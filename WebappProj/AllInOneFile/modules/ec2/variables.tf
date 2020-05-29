@@ -19,10 +19,10 @@ variable "seckey" {
 }
 
 variable "instance_type" {
-   type = map
+  type = map
 
-   default = {
-     master = "t2.medium"
-     worker = "t2.micro"
-   }
+  default = {
+    master = "t2.medium"
+    worker = "t2.micro"
+  }
 }

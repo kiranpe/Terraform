@@ -4,17 +4,17 @@ resource "aws_instance" "k8smaster" {
 
   security_groups = ["${var.secgroup}"]
   key_name        = var.seckey
-  
+
   tags = {
     Name = "k8smaster-node"
   }
- 
+
   connection {
     user        = var.ansible_user
     private_key = file(var.private_key)
     host        = self.public_ip
   }
-  
+
   provisioner "remote-exec" {
     inline = ["sudo apt-add-repository ppa:ansible/ansible -y && sudo apt-get update && sleep 15 && sudo apt install ansible -y"]
   }
