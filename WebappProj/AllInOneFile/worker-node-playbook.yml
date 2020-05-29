@@ -2,7 +2,6 @@
   hosts: k8smaster
 
   tasks:
-   
   - include: tasks/worker/token.yml
 
 - name: installing k8s and joining worker node with master
@@ -10,12 +9,11 @@
   become: yes
   
   tasks:
-  
   - include: tasks/worker/worker.yml
 
 - name: Checking nodes on master
   hosts: k8smaster
   become: false
+
   tasks:
-  
   - include: tasks/worker/checknodes.yml
