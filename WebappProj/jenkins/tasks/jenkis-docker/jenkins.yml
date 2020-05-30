@@ -9,9 +9,8 @@
         state: present
 
      - name: run the update
-       shell: apt-get update
-       args:
-        warn: no
+       apt:
+        update_cache: yes
      
      - name: Install aptitude using apt
        apt: 
