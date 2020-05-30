@@ -9,7 +9,8 @@
   become: yes
   
   tasks:
-  - include: tasks/worker/worker.yml
+  - include: tasks/worker/repos.yml
+  - include: tasks/worker/install-k8s.yml
 
 - name: Checking nodes on master
   hosts: k8smaster

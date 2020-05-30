@@ -3,5 +3,5 @@
   become: yes
   
   tasks:
-  
-  - include: tasks/master/master.yml
+  - include: tasks/master/repos.yml
+  - include: tasks/master/install-k8s.yml
