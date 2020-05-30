@@ -1,24 +1,24 @@
      - name: add key 
        apt_key:
-            url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
-            state: present
+        url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
+        state: present
 
      - name: add repo
        apt_repository:
-            repo: deb https://pkg.jenkins.io/debian-stable binary/
-            state: present
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
+        state: present
 
      - name: run the update
        shell: apt-get update
        args:
-          warn: no
+        warn: no
      
      - name: Install aptitude using apt
        apt: 
-         name: aptitude 
-         state: latest 
-         update_cache: yes 
-         force_apt_get: yes
+        name: aptitude 
+        state: latest 
+        update_cache: yes 
+        force_apt_get: yes
 
      - name: Install Jenkins
        apt:
@@ -43,28 +43,28 @@
 
      - name: Create scripts directory if it does not exist
        file:
-         path: /sites/scripts
-         state: directory
-         mode: '0777'
+        path: /sites/scripts
+        state: directory
+        mode: '0777'
 
      - name: Create logs directory if it does not exist
        file:
-         path: /sites/logs
-         state: directory
-         mode: '0777'
+        path: /sites/logs
+        state: directory
+        mode: '0777'
 
      - name: add jenkins to root
        lineinfile:
-          path: /etc/sudoers
-          insertafter: '^# User privilege specification'
-          line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
-          firstmatch: yes
-          state: present
+        path: /etc/sudoers
+        insertafter: '^# User privilege specification'
+         line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
+         firstmatch: yes
+         state: present
 
      - name: get the ip address
        shell: curl http://169.254.169.254/latest/meta-data/public-ipv4
        args:
-         warn: no
+        warn: no
        register: result
 
      - set_fact: public_ip={{ result.stdout }}
@@ -101,8 +101,8 @@
 
      - name: copy pem file to jenkins server
        copy:
-         src: /sites/keyfile.pem
-         dest: /sites
-         owner: jenkins
-         group: jenkins
-         mode: '0600'
+        src: /sites/keyfile.pem
+        dest: /sites
+        owner: jenkins
+        group: jenkins
+        mode: '0600'

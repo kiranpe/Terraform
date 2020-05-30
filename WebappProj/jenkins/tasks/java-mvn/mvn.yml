@@ -6,13 +6,13 @@
 
     - name: Sleep for 15 seconds and continue with play
       wait_for:
-        timeout: 15
+       timeout: 15
 
     - name: Extract maven tar file
       unarchive:
-        src: "{{ mvn_archive }}"
-        dest: /sites
-        remote_src: yes
+       src: "{{ mvn_archive }}"
+       dest: /sites
+       remote_src: yes
       become_user: ubuntu
 
     - name: create space after last line
@@ -21,21 +21,21 @@
 
     - name: add maven home and path to bashrc file
       lineinfile:
-          dest: ~/.bashrc
-          regexp: '^#M2 Home'
-          line: "{{ item }}"
-          state: present
+       dest: ~/.bashrc
+       regexp: '^#M2 Home'
+       line: "{{ item }}"
+       state: present
       with_items:
-           - "{{ '#M2_Home' }}"
-           - "{{ export_mvn }}"
-           - "{{ 'export PATH=$M2_HOME/bin:$PATH' }}"
+       - "{{ '#M2_Home' }}"
+       - "{{ export_mvn }}"
+       - "{{ 'export PATH=$M2_HOME/bin:$PATH' }}"
       become_user: ubuntu
 
     - name: Create symbolic link for maven
       file:
-         src: "{{ mvn_home }}/bin/mvn"
-         dest: /usr/bin/mvn
-         state: link
+       src: "{{ mvn_home }}/bin/mvn"
+       dest: /usr/bin/mvn
+       state: link
 
     - debug: msg="Maven Installation is complete.. Checking version"
 
@@ -46,6 +46,5 @@
 
     - name: removing maven tar file from /sites
       file:
-        path: "{{ mvn_archive }}"
-        state: absent
-
+       path: "{{ mvn_archive }}"
+       state: absent

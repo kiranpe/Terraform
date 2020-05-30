@@ -3,7 +3,7 @@
         name: "{{ item }}"
         state: latest 
         update_cache: yes
-       loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+       loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'python-pip']
 
      - name: Add Docker GPG apt Key
        apt_key:
@@ -15,15 +15,9 @@
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
 
-     - name: Update apt and install docker-ce
+     - name: Update apt cache and install docker-ce
        apt:
         name: docker-ce 
-        state: latest
-        update_cache: yes
-
-     - name: Install python pip
-       apt: 
-        name: python-pip
         state: latest
         update_cache: yes
 
@@ -38,10 +32,10 @@
 
      - name: Log in to Docker Hub
        docker_login:
-           username: "{{ hub_username }}"
-           password: "{{ hub_password }}"
-           reauthorize: yes
+        username: "{{ hub_username }}"
+        password: "{{ hub_password }}"
+        reauthorize: yes
        register: login_results
 
      - debug:
-         var: login_results
+        var: login_results

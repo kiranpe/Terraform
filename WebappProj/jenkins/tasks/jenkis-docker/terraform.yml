@@ -15,9 +15,9 @@
 
      - name: download latest version
        get_url:
-          url: "{{ url }}"
-          dest: /sites/terraform.zip
-          mode: '0755'
+        url: "{{ url }}"
+        dest: /sites/terraform.zip
+        mode: '0755'
 
      - name: extract terraform zip file
        unarchive:
