@@ -1,8 +1,9 @@
    - name: install docker kubectl kubelet and kubeadm
      apt:
-      name: ['docker-ce=18.06.1~ce~3-0~ubuntu','kubelet=1.13.5-00','kubeadm=1.13.5-00','kubectl=1.13.5-00']
+      name: "{{ item }}"
       state: present
       update_cache: yes
+     loop: ['docker-ce=18.06.1~ce~3-0~ubuntu','kubelet=1.13.5-00','kubeadm=1.13.5-00','kubectl=1.13.5-00']
   
    - name: mark hold kubeadm and kubelet
      shell: apt-mark hold docker-ce kubelet kubeadm kubectl
