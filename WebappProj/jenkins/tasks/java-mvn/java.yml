@@ -7,12 +7,15 @@
         group: ubuntu
 
     - name: Copy java tar file
-      copy: src=jdk-8u251-linux-x64.tar.gz dest=/sites mode=0755
+      copy: 
+       src: "{{ java_archive }}"
+       dest: /sites 
+       mode: 0755
       become_user: ubuntu
 
     - name: Extract java tar file
       unarchive:
-          src: /sites/jdk-8u251-linux-x64.tar.gz
+          src: "{{ java_archive }}"
           dest: /sites
           remote_src: yes
       become_user: ubuntu
@@ -29,13 +32,13 @@
           state: present
       with_items:
            - "{{ '#Java_Home' }}"
-           - "{{ 'export JAVA_HOME=/sites/jdk1.8.0_251' }}" 
+           - "{{ export_java }}" 
            - "{{ 'export PATH=$JAVA_HOME/bin:$PATH' }}"
       become_user: ubuntu
 
     - name: Create symbolic link for java
       file:
-         src: /sites/jdk1.8.0_251/bin/java 
+         src: "{{ java_home }}/bin/java" 
          dest: /usr/bin/java
          state: link
     - debug: msg="Java Installation is complete.. Checking version"
@@ -48,5 +51,5 @@
 
     - name: removing java tar file from /sites
       file:
-        path: /sites/jdk-8u251-linux-x64.tar.gz
+        path: "{{ java_archive }}"
         state: absent
