@@ -24,7 +24,7 @@ resource "aws_instance" "k8sworkernode" {
       sleep 30;
       >workerhost;
       echo "[k8sworker]" | tee -a workerhost;
-      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" | tee -a workerhost;
+      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a workerhost;
       cat ../masternode/masterhost | tee -a workerhost;
       ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i workerhost worker-node-playbook.yml
     EOT
