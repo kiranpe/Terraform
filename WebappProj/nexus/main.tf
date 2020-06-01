@@ -21,7 +21,7 @@ resource "aws_instance" "nexus" {
           >nexus;
           echo "[nexus]" | tee -a nexus;
           echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a nexus;
-          ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i nexus nexus-repo.yaml
+          ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i nexus nexus-repo.yml
     EOT
   }
 
