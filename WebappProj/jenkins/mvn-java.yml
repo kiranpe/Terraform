@@ -9,7 +9,7 @@
    mvn_home: "/sites/apache-maven-3.6.2"
    mvn_archive: "/sites/apache-maven-3.6.2-bin.tar.gz"
    export_java: "export JAVA_HOME={{ java_home }}"
-   export_mvn: "export JAVA_HOME={{ mvn_home }}" 
+   export_mvn: "export M2_HOME={{ mvn_home }}" 
 
   tasks:
   - name: Set authorized key for user ubuntu copying it from current user
