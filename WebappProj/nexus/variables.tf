@@ -6,10 +6,6 @@ variable "ansible_user" {
   default = "ubuntu"
 }
 
-variable "ami" {
-  default = "ami-05c1fa8df71875112"
-}
-
 variable "secgroup" {
   default = "k8scluster"
 }
@@ -19,5 +15,5 @@ variable "seckey" {
 }
 
 variable "instance_type" {
-   default = "t2.medium"
+  default = "t2.medium"
 }

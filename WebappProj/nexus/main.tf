@@ -1,18 +1,18 @@
 resource "aws_instance" "nexus" {
-  ami           = var.ami
+  ami           = "${data.aws_ami.ec2_instance.id}"
   instance_type = var.instance_type
 
   security_groups = ["${var.secgroup}"]
-  key_name = var.seckey
+  key_name        = var.seckey
 
   connection {
-      user        = var.ansible_user
-      private_key = file(var.private_key)
-      host = self.public_ip
+    user        = var.ansible_user
+    private_key = file(var.private_key)
+    host        = self.public_ip
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt-add-repository ppa:ansible/ansible -y && sudo apt-get update && sleep 15 && sudo apt-get install -f ansible -y && sudo hostnamectl set-hostname nexus"]
+    inline = ["sudo apt-add-repository ppa:ansible/ansible -y && sudo apt-get update && sleep 15 && sudo apt install ansible -y && sudo hostnamectl set-hostname nexus"]
   }
 
   provisioner "local-exec" {
@@ -20,7 +20,7 @@ resource "aws_instance" "nexus" {
       sleep 30;
           >nexus;
           echo "[nexus]" | tee -a nexus;
-          echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no'" | tee -a nexus;
+          echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a nexus;
           ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i nexus nexus-repo.yaml
     EOT
   }
