@@ -1,0 +1,55 @@
+    - name: Create directoy
+      file:
+        path: /sites
+        state: directory
+        recurse: yes
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Copy java tar file
+      copy: 
+       src: "{{ java_archive }}"
+       dest: /sites 
+       mode: 0755
+      become_user: ubuntu
+
+    - name: Extract java tar file
+      unarchive:
+          src: "{{ java_archive }}"
+          dest: /sites
+          remote_src: yes
+      become_user: ubuntu
+
+    - name: create space after last line
+      shell: echo " " | tee -a ~/.bashrc
+      become_user: ubuntu
+
+    - name: add java home and path bashrc file
+      lineinfile:
+          dest: ~/.bashrc
+          regexp: '^#Java Home'
+          line: "{{ item }}" 
+          state: present
+      with_items:
+           - "{{ '#Java_Home' }}"
+           - "{{ export_java }}" 
+           - "{{ 'export PATH=$JAVA_HOME/bin:$PATH' }}"
+      become_user: ubuntu
+
+    - name: Create symbolic link for java
+      file:
+         src: "{{ java_home }}/bin/java" 
+         dest: /usr/bin/java
+         state: link
+    - debug: msg="Java Installation is complete.. Checking version"
+
+    - name: check Java Version
+      shell: java -version 2>&1 | awk -F'"' '/version/ {print $2}'
+      register: result
+
+    - debug: msg="Java Version is {{ result.stdout }}"
+
+    - name: removing java tar file from /sites
+      file:
+        path: "{{ java_archive }}"
+        state: absent

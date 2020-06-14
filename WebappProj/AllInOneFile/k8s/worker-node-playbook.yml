@@ -10,7 +10,7 @@
   
   tasks:
   - include: tasks/worker/repos.yml
-  - include: tasks/worker/install-k8s.yml
+  - include: tasks/worker/configure_workernode.yml
 
 - name: Checking nodes on master
   hosts: k8smaster

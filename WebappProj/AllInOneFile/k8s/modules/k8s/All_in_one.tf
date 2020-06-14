@@ -21,11 +21,11 @@ resource "aws_instance" "k8smaster" {
 
   provisioner "local-exec" {
     command = <<EOT
-      sleep 15;
-      >masterhost;
-      echo "[k8smaster]" | tee -a masterhost;
-      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a masterhost;
-      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i masterhost master-node-playbook.yml
+      sleep 30;
+      >k8s/masterhost;
+      echo "[k8smaster]" | tee -a k8s/masterhost;
+      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a k8s/masterhost;
+      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i k8s/masterhost k8s/master-node-playbook.yml
     EOT
   }
 }
@@ -37,7 +37,7 @@ resource "aws_instance" "k8sworker" {
   security_groups = ["${var.secgroup}"]
   key_name        = var.seckey
 
-  count = 2
+  count = 1
 
   connection {
     user        = var.ansible_user
@@ -51,12 +51,12 @@ resource "aws_instance" "k8sworker" {
 
   provisioner "local-exec" {
     command = <<EOT
-      sleep 15;
-      >workerhost;
-      echo "[k8sworker]" | tee -a workerhost;
-      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a workerhost;
-      cat masterhost | tee -a workerhost;
-      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i workerhost worker-node-playbook.yml
+      sleep 30;
+      >k8s/workerhost;
+      echo "[k8sworker]" | tee -a k8s/workerhost;
+      echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a k8s/workerhost;
+      cat k8s/masterhost | tee -a k8s/workerhost;
+      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i k8s/workerhost k8s/worker-node-playbook.yml
     EOT
   }
 
@@ -64,4 +64,12 @@ resource "aws_instance" "k8sworker" {
     Name = "k8sworker-node.${count.index}"
   }
   depends_on = ["aws_instance.k8smaster"]
+}
+
+output "k8smaster_ip" {
+  value = aws_instance.k8smaster.public_ip
+}
+
+output "k8sworker_ip" {
+  value = aws_instance.k8sworker.*.public_ip
 }

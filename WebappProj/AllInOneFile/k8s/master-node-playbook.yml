@@ -4,4 +4,4 @@
   
   tasks:
   - include: tasks/master/repos.yml
-  - include: tasks/master/install-k8s.yml
+  - include: tasks/master/configure_master.yml
