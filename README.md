@@ -3,6 +3,7 @@
 #before running terraform commands create terraform workspaces for k8s instances launch using K8S folder
 
 #terraform workspace new master
+
 #terraform workspace new worker
 
 #This will automatically pick the right instance type for your set up
