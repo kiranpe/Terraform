@@ -1,0 +1,2 @@
+[java]
+3.15.239.168 ansible_user=ubuntu ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3

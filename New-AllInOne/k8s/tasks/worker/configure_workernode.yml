@@ -1,0 +1,27 @@
+   - name: install docker kubectl kubelet and kubeadm
+     apt:
+      name: ['docker-ce=18.06.1~ce~3-0~ubuntu','kubelet=1.13.5-00','kubeadm=1.13.5-00','kubectl=1.13.5-00']
+      state: present
+      update_cache: yes
+  
+   - name: mark hold kubeadm kubectl and kubelet
+     shell: apt-mark hold docker-ce kubelet kubeadm kubectl
+
+   - name: add ubuntu user to docker group
+     shell: usermod -aG docker $USER
+
+   - name: Enable iptables bridge call
+     shell: echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+     register: result
+
+   - debug: msg={{ result.stdout }}
+
+   - debug:
+      msg: "[Worker] K8S_TOKEN_HOLDER K8S token is {{ hostvars['K8S_TOKEN_HOLDER']['token'] }}"
+
+   - name: join master node
+     shell: "{{ hostvars['K8S_TOKEN_HOLDER']['token'] }}"
+     args:
+       warn: no
+   - pause:
+        seconds: 30

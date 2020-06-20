@@ -1,0 +1,11 @@
+  - name: get the token details
+    action: shell kubeadm token create --print-join-command
+    register: K8S_TOKEN
+
+  - name: store token in dummy host
+    add_host:
+     name:  "K8S_TOKEN_HOLDER"
+     token: "{{ K8S_TOKEN.stdout }}"
+
+  - debug:
+       msg: "[Master] K8S_TOKEN_HOLDER K8S token is {{ hostvars['K8S_TOKEN_HOLDER']['token'] }}"

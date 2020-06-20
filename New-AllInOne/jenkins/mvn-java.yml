@@ -1,0 +1,22 @@
+- name: Install Oracle Java and Maven
+  hosts: java
+  become: true
+  gather_facts: no
+  
+  vars:
+   java_home: "/sites/jdk1.8.0_251"
+   java_archive: "/sites/jdk-8u251-linux-x64.tar.gz"
+   mvn_home: "/sites/apache-maven-3.6.2"
+   mvn_archive: "/sites/apache-maven-3.6.2-bin.tar.gz"
+   export_java: "export JAVA_HOME={{ java_home }}"
+   export_mvn: "export JAVA_HOME={{ mvn_home }}" 
+
+  tasks:
+  - name: Set authorized key for user ubuntu copying it from current user
+    authorized_key:
+      user: ubuntu
+      state: present
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+  - include: tasks/java-mvn/java.yml
+  - include: tasks/java-mvn/mvn.yml

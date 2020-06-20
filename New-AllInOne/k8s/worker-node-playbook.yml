@@ -1,0 +1,20 @@
+- name: lgoin to master node and get the token details
+  hosts: k8smaster
+
+  tasks:
+  - include: tasks/worker/token.yml
+
+- name: installing k8s and joining worker node with master
+  hosts: k8sworker
+  become: yes
+  
+  tasks:
+  - include: tasks/worker/repos.yml
+  - include: tasks/worker/configure_workernode.yml
+
+- name: Checking nodes on master
+  hosts: k8smaster
+  become: false
+
+  tasks:
+  - include: tasks/worker/checknodes.yml

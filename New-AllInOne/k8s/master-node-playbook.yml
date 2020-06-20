@@ -1,0 +1,7 @@
+- name: Installing k8s on master node
+  hosts: k8smaster
+  become: yes
+  
+  tasks:
+  - include: tasks/master/repos.yml
+  - include: tasks/master/configure_master.yml
