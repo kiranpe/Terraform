@@ -32,7 +32,7 @@ resource "aws_instance" "jenkins" {
       >jenkins/jenkins;
       echo "[jenkinsci]" | tee -a jenkins/jenkins;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a jenkins/jenkins;
-      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i jenkins/jenkins jenkins/jenkins-docker.yml -e "hub_username=kiranp23 hub_password=Chinni.23"
+      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i jenkins/jenkins jenkins/jenkins-docker.yml -e "hub_username="dockeruser" hub_password="dockerpass""
     EOT
   }
 
