@@ -1,2 +1,0 @@
-[k8smaster]
-3.16.68.46 ansible_user=ubuntu ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
