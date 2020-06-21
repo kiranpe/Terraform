@@ -10,3 +10,7 @@
 
 
 #Created All in one file to create k8s cluster, Jenkins, Nexus Repo with one terraform modules
+
+#A Brand new way to set up keypair, security group in aws and lanch ec2 and install java jenkins nexus docker k8s using ansible
+
+#This set up is undet New-AllInOne folder.. complete automation and less variables
