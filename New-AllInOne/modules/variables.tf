@@ -4,10 +4,6 @@ variable "ports" {
   default     = [22, 80, 443, 8443]
 }
 
-variable "private_key" {
-  default = "accesskey.pem"
-}
-
 variable "ansible_user" {
   default = "ubuntu"
 }

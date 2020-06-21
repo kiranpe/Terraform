@@ -25,7 +25,7 @@ resource "aws_instance" "k8smaster" {
       >k8s/masterhost;
       echo "[k8smaster]" | tee -a k8s/masterhost;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a k8s/masterhost;
-      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i k8s/masterhost k8s/master-node-playbook.yml
+      ansible-playbook -u ${var.ansible_user} --private-key ${local_file.key_file.filename} -i k8s/masterhost k8s/master-node-playbook.yml
     EOT
   }
 
@@ -62,7 +62,7 @@ resource "aws_instance" "k8sworker" {
       echo "[k8sworker]" | tee -a k8s/workerhost;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a k8s/workerhost;
       cat k8s/masterhost | tee -a k8s/workerhost;
-      ansible-playbook -u ${var.ansible_user} --private-key ${var.private_key} -i k8s/workerhost k8s/worker-node-playbook.yml
+      ansible-playbook -u ${var.ansible_user} --private-key ${local_file.key_file.filename} -i k8s/workerhost k8s/worker-node-playbook.yml
     EOT
   }
 
