@@ -23,7 +23,7 @@ resource "aws_security_group" "sec_grp" {
   }
 
   ingress {
-    description = "K8S SecGrp"
+    description = "k8s sec grp"
     from_port   = 3000
     to_port     = 11000
     protocol    = "tcp"
@@ -31,7 +31,7 @@ resource "aws_security_group" "sec_grp" {
   }
 
   egress {
-    description = "K8S SecGrp"
+    description = "Allow All"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
