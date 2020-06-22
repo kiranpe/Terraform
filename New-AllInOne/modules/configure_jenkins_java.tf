@@ -18,20 +18,10 @@ resource "aws_instance" "jenkins" {
   provisioner "local-exec" {
     command = <<EOT
       sleep 30;
-	  >jenkins/java;
-	  echo "[java]" | tee -a jenkins/java;
-	  echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a jenkins/java;
-	  ansible-playbook -u ${var.ansible_user} --private-key  ${local_file.key_file.filename} -i jenkins/java jenkins/mvn-java.yml
-    EOT
-  }
-
-  # This is where we configure the instance with ansible-playbook
-  provisioner "local-exec" {
-    command = <<EOT
-      sleep 30;
       >jenkins/jenkins;
       echo "[jenkinsci]" | tee -a jenkins/jenkins;
       echo "${self.public_ip} ansible_user=${var.ansible_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3" | tee -a jenkins/jenkins;
+      ansible-playbook -u ${var.ansible_user} --private-key  ${local_file.key_file.filename} -i jenkins/jenkins jenkins/mvn-java.yml
       ansible-playbook -u ${var.ansible_user} --private-key  ${local_file.key_file.filename} -i jenkins/jenkins jenkins/jenkins-docker.yml -e "hub_username="dockeruser" hub_password="dockerpass""
     EOT
   }
